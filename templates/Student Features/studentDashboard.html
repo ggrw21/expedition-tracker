@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/studentDashboard.css') }}">
+</head>
+<body>
+    <div class="top-bar">
+        <h1 class="title">Student Statistics</h1>
+        <div class="dropdown-container">
+            <div class="top-right-dropdown">
+                <!--On click change the hidden elements to show-->
+                <button onclick="toggleDropdown()">{{ first_name or username }}</button>
+                <div id="dropdown" class="dropdown-content">
+                    <!--The profile button is a redirect link, and the logout button POSTs a logout request to run a logout python function-->
+                    <a class="dropdown-link">Profile</a>
+                    <form id="logout-form" method="POST" action="{{ url_for('studentDashboard.logout') }}">
+                        <button type="submit" class="dropdown-link">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="sidebar" id="sidebar">
+        <!--Button to toggle the sidebar-->
+        <button class="toggle_button" id="toggle_sidebar"><i class="fas fa-bars"></i></button>
+        <!--DofE Journey Planner Logo-->
+        <div class="logo_container" id="logo">
+            <div class="logo_inner">
+                <img id="main_logo" src="{{ url_for('static', filename='images/bigLogo.png') }}" style="width:215px;height:100px;">
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="line-vertical"></div>
+        <!-- Navigation Panel-->
+        <div class="sidebar_links">
+            <a class="current_page" href="#">
+                <i style="font-size: 20px" class="fas fa-home"></i>
+                <span class="link-text" id="home_button">Home</span>
+            </a>
+
+            <a href="#" onclick="redirect()">
+                <i class="fas fa-list"></i>
+                <span class="link-text" id="watchlist_button">Item 1</span>
+            </a>
+            <a href="#" onclick="redirect()">
+                <i class="fas fa-check"></i> 
+                <span class="link-text" id="watched_button">Item 2</span>
+            </a>
+
+              
+        </div>
+    </div>
+
+    <div class="content">
+        <form method="POST">
+            <div class="volunteering">
+                <h3>Volunteering</h3>
+                <input type="range" name="volunteering" min="0" max="100" value="{{ activity[0] or 0 }}" class="slider" id="VolunteeringRange">
+                <p>Value: <span id="volunteering%"></span>%</p>
+              </div>
+            <div class="physical">
+                <h3>Physical</h3>
+                <input type="range" name="physical" min="0" max="100" value="{{ activity[1] or 0 }}" class="slider" id="PhysicalRange">
+                <p>Value: <span id="physical%">%</span>%</p>
+           </div>
+              <div class="skills">
+                <h3>Skills</h3>
+                <input type="range" name="skills" min="0" max="100" value="{{ activity[2] or 0 }}" class="slider" id="SkillsRange">
+                <p>Value: <span id="skills%"></span>%</p>
+            </div><br>
+              <button type="submit" id="update_button" class="update_button">Update</button><br>
+        </form>
+    </div>
+
+<script>
+     //If the sidebar is collapsed from previous page, then collapse it on this page as well.
+    if (localStorage.getItem("IsCollapsed") === "true") {
+        var sidebar = document.getElementById("sidebar");
+        var content = document.querySelector('.content');
+        var sidebar_button = document.getElementById("toggle_sidebar");
+        sidebar.classList.add("closed");
+        content.classList.add("shifted");
+        sidebar_button.classList.add("closed");
+        setTimeout(update_elements, 0);
+    }
+    function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("show");
+    }
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+        if (!event.target.closest('.top-right-dropdown')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+    //Determines if the sidebar is closed/open and updates the elements accordingly
+    document.getElementById("toggle_sidebar").onclick = function() {
+        var sidebar = document.getElementById("sidebar");
+        var content = document.querySelector('.content');
+        var sidebar_button = document.getElementById("toggle_sidebar");
+
+        if (sidebar.classList.contains("closed")) {
+            sidebar.classList.remove("closed");
+            content.classList.remove("shifted");
+            sidebar_button.classList.remove("closed"); 
+            setTimeout(revert_update, 150);
+            localStorage.setItem("IsCollapsed", false);
+        } else {
+            sidebar.classList.add("closed");
+            content.classList.add("shifted");
+            sidebar_button.classList.add("closed");
+            setTimeout(update_elements, 0);
+            localStorage.setItem("IsCollapsed", true);
+
+        }
+    }
+    //Updates the elements to fit the collapsed sidebar
+    function update_elements() {
+        var mainLogo = document.getElementById("main_logo");
+        var logoContainer = document.getElementById("logo");
+        var sidebar_button = document.getElementById("toggle_sidebar");
+        var content = document.querySelector(".content"); 
+        var title = document.querySelector(".title");
+        mainLogo.src = src="{{ url_for('static', filename='images/smallLogo.png') }}";
+        mainLogo.style.width = "65px";
+        mainLogo.style.height = "90px";
+        logoContainer.style.marginTop = '0px';
+        logoContainer.style.marginLeft = '5px';
+        content.style.paddingLeft = '90px';
+        title.style.left = '130px';
+        title.style.transition = 'left 0.5s ease';
+        document.getElementById("home_button").innerHTML = "";
+        document.getElementById("watchlist_button").innerHTML = "";
+        document.getElementById("watched_button").innerHTML = "";
+        document.getElementById("changeClass").innerHTML = "";
+
+        
+    }
+
+    function revert_update() {
+        var mainLogo = document.getElementById("main_logo");
+        var logoContainer = document.getElementById("logo");
+        var sidebar_button = document.getElementById("toggle_sidebar");
+        var content = document.querySelector(".content"); 
+        var title = document.querySelector(".title");
+
+        mainLogo.src = src="{{ url_for('static', filename='images/bigLogo.png') }}";
+        mainLogo.style.width = "215px";
+        mainLogo.style.height = "100px";
+        logoContainer.style.marginTop = '-20px';
+        logoContainer.style.marginLeft = '0px';
+        content.style.paddingLeft = '260px';
+        title.style.left = '310px';
+        title.style.transition = 'left 0.5s ease'; 
+        document.getElementById("home_button").innerHTML = "Home";
+        document.getElementById("watchlist_button").innerHTML = "Item 1";
+        document.getElementById("watched_button").innerHTML = "Item 2";
+        document.getElementById("changeClass").innerHTML = "Change Class";
+
+    }
+
+
+    //Redirect Links
+    document.getElementById("logo").onclick = function () {
+        location.href = "/home";}
+
+
+        var slider = document.getElementById("VolunteeringRange");
+        var output = document.getElementById("volunteering%");
+        output.innerHTML = slider.value;
+
+        slider.oninput = function() {
+            output.innerHTML = this.value;
+            }
+
+        var slider2 = document.getElementById("PhysicalRange");
+        var output2 = document.getElementById("physical%");
+        output2.innerHTML = slider2.value;
+
+        slider2.oninput = function() {
+            output2.innerHTML = this.value;
+            }
+
+        var slider3 = document.getElementById("SkillsRange");
+        var output3 = document.getElementById("skills%");
+        output3.innerHTML = slider3.value;
+
+        slider3.oninput = function() {
+            output3.innerHTML = this.value;
+            }
+            
+            
+
+</script>
+</body>
+</html>

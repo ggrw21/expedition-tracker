@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <style>
+        .top-right-button {
+            position: absolute;
+            top: 10px;
+            right: 5px;
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #708090;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Signup Form Styles */
+        .signup-form {
+            background-color: #FFFFFF;
+            width: 400px;
+            padding: 30px;
+            border: 2px solid #FFD700;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-form h1 {
+            text-align: center;
+            color: #4169E1;
+            margin-bottom: 20px;
+        }
+
+        .signup-form label {
+            display: block;
+            margin-bottom: 10px;
+            color: #4169E1;
+        }
+
+        .signup-form input[type="text"],
+        .signup-form input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .signup-form input[type="submit"] {
+            background-color: #4169E1;
+            color: #FFD700;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+
+        .signup-form input[type="submit"]:hover {
+            background-color: #314E78;
+        }
+
+        .signup-form .forgot-password {
+            display: block;
+            text-align: right;
+            margin-top: 10px;
+            color: #4169E1;
+        }
+
+        /* Overlay Styles */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+        h1{
+            margin-right: 30px;
+        }
+       /* Button Styles */
+        .button, .top-right-button {
+            background-color: #4169E1;
+            color: #FFD700;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px; 
+            font-size: 14px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover, .top-right-button:hover {
+            background-color: #314E78;
+        }
+
+        .button:focus , .top-right-button:focus{
+            outline: none;
+        }
+
+        .button:disabled, .top-right-button:disabled {
+            background-color: #CCCCCC;
+            color: #999999;
+            cursor: not-allowed;
+        }
+   
+    </style>
+</head>
+<body>
+    <button class="top-right-button" id="Signup_redirect" type="button">Signup</button>
+
+    <h1>Login Form</h1>
+    <form action="/login" method="post" id="form1">
+        <label for="email">Email:</label><br>
+        <input id="email" type="text" name="email" required><br>
+        <label for="password">Password:</label><br>
+        <input id="password" type="password" name="password" required><br><br>
+        <input class="button" type="submit" name="action" value="Submit" id="submit_login">
+        <input class="button" type="button" name="action" value="Forgot Password?" id="forgot_password">
+        <p id="message" style="color: red;">{{ red_error_message }}</p>
+    </form>    
+
+    <script>
+        document.getElementById("submit_login").onclick = function (event) {
+            var email = document.getElementById("email").value;
+            if (!ValidateEmail(email)) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        };
+
+        function ValidateEmail(input) {
+            var validRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (input.match(validRegex)) {
+                return true;
+            } else {
+                alert("Invalid email address!");
+                return false;
+            }
+        }
+
+        document.getElementById("forgot_password").onclick = function () {
+            location.href = "/forgot";
+        };
+        document.getElementById("Signup_redirect").onclick = function () {
+            location.href = "/";
+        };
+    </script>
+</body>
+</html>

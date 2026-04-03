@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pairTracker.css') }}">
+</head>
+<body>
+    <div class="top-bar">
+        <h1 class="title">Pair Tracker</h1>
+        <div class="dropdown-container">
+            <div class="top-right-dropdown">
+                <!--On click change the hidden elements to show-->
+                <button onclick="toggleDropdown()">{{ first_name or username }}</button>
+                <div id="dropdown" class="dropdown-content">
+                    <!--The profile button is a redirect link, and the logout button POSTs a logout request to run a logout python function-->
+                    <a class="dropdown-link">Profile</a>
+                    <form id="logout-form" method="POST" action="{{ url_for('utilities.logout') }}">
+                        <button type="submit" class="dropdown-link">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="sidebar" id="sidebar">
+        <!--Button to toggle the sidebar-->
+        <button class="toggle_button" id="toggle_sidebar"><i class="fas fa-bars"></i></button>
+        <!--DofE Journey Planner Logo-->
+        <div class="logo_container" id="logo">
+            <div class="logo_inner">
+                <img id="main_logo" src="{{ url_for('static', filename='images/bigLogo.png') }}" style="width:215px;height:100px;">
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="line-vertical"></div>
+        <!-- Navigation Panel-->
+        <div class="sidebar_links">
+            <div class="dropdownClasses">
+                <i class="fas fa-exchange-alt"></i>
+                <span class="link-text" id="changeClass">{{ selectedClass or 'Change Class' }}</span>
+                <br>
+                <div class="dropdown-contentClasses">
+                    {% if classes is not none %}
+                        {% for class in classes %}
+                            <a href="#" onclick="switchClass('{{ class[0] }}', '{{ class[1] }}')">{{ class[0] }}</a>
+                        {% endfor %}
+                    {% else %}
+                        <a href="#">No classes available</a>
+                    {% endif %}
+                </div>                
+            </div>
+            <a href="/view-class" onclick="redirect()">
+                <i class="fas fa-eye"></i>
+                <span class="link-text" id="viewClass">View Class</span>
+            </a>
+
+            <a href="/live-expedition" onclick="redirect()">
+                <i class="fas fa-map-marker-alt"></i>
+                <span class="link-text" id="liveExpedition">Live Expedition</span>
+            </a>
+
+            <a href="/start-expedition" onclick="redirect()">
+                <i class="fas fa-play"></i>
+                <span class="link-text" id="startExpedition">Start Expedition</span>
+            </a>
+
+            <a href="/expedition-history" onclick="redirect()">
+                <i class="fas fa-history"></i>
+                <span class="link-text" id="expeditionHistory">Expedition History</span>
+            </a>  
+
+            <a class="current_page" chref="#">
+                <i class="fas fa-sync-alt"></i>
+                <span class="link-text" id="pairTracker">Pair Tracker</span>
+            </a>  
+
+            <a href="/create-class" onclick="redirect()">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span class="link-text" id="createClass">Create Class</span>
+            </a>  
+        </div>
+    </div>
+
+    <form id="classForm" method="POST" action="/select-class" style="display: none;">
+        <input type="hidden" name="selected_class" id="selectedClass">
+        <input type="hidden" name="selected_ID" id="selectedID">
+    </form>
+
+    <div class="content">
+        <div class="user-info">
+            <div class="update_profile_title">
+                <i class="fas fa-user"></i>
+                <h4>Pair Tracker</h4>
+            </div>
+            <div class="horizontal-line"></div>
+            <form method="POST">
+                <br>
+                <label for="trackerCode">Tracker Code:</label><br>
+                <input class="box_input" type="text" id="trackerCode" name="trackerCode">
+                <button type="submit" id="update_button" class="update_button">Create</button><br>
+                <div class="ordermsg"><p>Enter the code in the following order (Red, Orange, Yellow, Green, Blue, Purple)</p></div>
+                <p class="message" id="message" style="color: #20f320;">{{ message or '' }}</p>
+                <p class="message" id="error_message" style="color: #f32020;">{{ error_message or '' }}</p><br>
+            </form>
+        </div>
+    </div>
+    </div>
+<script>
+     //If the sidebar is collapsed from previous page, then collapse it on this page as well.
+    if (localStorage.getItem("IsCollapsed") === "true") {
+        var sidebar = document.getElementById("sidebar");
+        var content = document.querySelector('.content');
+        var sidebar_button = document.getElementById("toggle_sidebar");
+        sidebar.classList.add("closed");
+        content.classList.add("shifted");
+        sidebar_button.classList.add("closed");
+        setTimeout(update_elements, 0);
+    }
+    function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("show");
+    }
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+        if (!event.target.closest('.top-right-dropdown')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+    //Determines if the sidebar is closed/open and updates the elements accordingly
+    document.getElementById("toggle_sidebar").onclick = function() {
+        var sidebar = document.getElementById("sidebar");
+        var content = document.querySelector('.content');
+        var sidebar_button = document.getElementById("toggle_sidebar");
+
+        if (sidebar.classList.contains("closed")) {
+            sidebar.classList.remove("closed");
+            content.classList.remove("shifted");
+            sidebar_button.classList.remove("closed"); 
+            setTimeout(revert_update, 150);
+            localStorage.setItem("IsCollapsed", false);
+        } else {
+            sidebar.classList.add("closed");
+            content.classList.add("shifted");
+            sidebar_button.classList.add("closed");
+            setTimeout(update_elements, 0);
+            localStorage.setItem("IsCollapsed", true);
+
+        }
+    }
+    //Updates the elements to fit the collapsed sidebar
+    function update_elements() {
+        var mainLogo = document.getElementById("main_logo");
+        var logoContainer = document.getElementById("logo");
+        var sidebar_button = document.getElementById("toggle_sidebar");
+        var content = document.querySelector(".content"); 
+        var title = document.querySelector(".title");
+        mainLogo.src = "{{ url_for('static', filename='images/smallLogo.png') }}";
+        mainLogo.style.width = "65px";
+        mainLogo.style.height = "90px";
+        logoContainer.style.marginTop = '0px';
+        logoContainer.style.marginLeft = '5px';
+        content.style.paddingLeft = '90px';
+        title.style.left = '180px';
+        title.style.transition = 'left 0.5s ease';
+        document.getElementById("changeClass").innerHTML = "";
+        document.getElementById("viewClass").innerHTML = "";
+        document.getElementById("startExpedition").innerHTML = "";
+        document.getElementById("expeditionHistory").innerHTML = "";
+        document.getElementById("liveExpedition").innerHTML = "";
+        document.getElementById("pairTracker").innerHTML = "";
+        document.getElementById("createClass").innerHTML = "";
+
+        
+    }
+
+    function revert_update() {
+        var mainLogo = document.getElementById("main_logo");
+        var logoContainer = document.getElementById("logo");
+        var sidebar_button = document.getElementById("toggle_sidebar");
+        var content = document.querySelector(".content"); 
+        var title = document.querySelector(".title");
+
+        mainLogo.src = "{{ url_for('static', filename='images/bigLogo.png') }}";
+        mainLogo.style.width = "215px";
+        mainLogo.style.height = "100px";
+        logoContainer.style.marginTop = '-20px';
+        logoContainer.style.marginLeft = '0px';
+        content.style.paddingLeft = '260px';
+        title.style.left = '380px';
+        title.style.transition = 'left 0.5s ease'; 
+        document.getElementById("changeClass").innerHTML = "Change Class";
+        document.getElementById("viewClass").innerHTML = "View Class";
+        document.getElementById("startExpedition").innerHTML = "Start Expedition";
+        document.getElementById("expeditionHistory").innerHTML = "Expedition History";
+        document.getElementById("liveExpedition").innerHTML = "Live Expedition";
+        document.getElementById("pairTracker").innerHTML = "Pair Tracker";
+        document.getElementById("createClass").innerHTML = "Create Class";
+
+    }
+
+    function switchClass(selectedClass, selectedID) {
+        document.getElementById('selectedClass').value = selectedClass;
+        document.getElementById('selectedID').value = selectedID
+        document.getElementById('classForm').submit();
+    }
+
+    document.getElementById("update_button").onclick = function (event) {
+            var code = document.getElementById('trackerCode').value;
+
+            if (!checkLength(code)){
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        };
+
+        function checkLength(code) {
+            if (code.length === 6) {
+                return true;
+            } else {
+                alert("Code must be exactly 6 characters long.");
+                return false;
+            }
+        }
+
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+/* Base Styles */
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #708090;
+}
+
+/* Header Styles */
+.header {
+    background-color: #4169E1;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 24px;
+}
+
+/* Top Bar Styles */
+.top-bar {
+    position: relative;
+    background-color: #4169E1;
+    height: 50px;
+    width: 100%;
+}
+
+.title{
+    position: absolute;
+    top: 11px;
+    left: 310px;
+    transform: translate(-50%, -50%);
+    font-size: 23px;
+    color: black;
+    transition: transform  .5s ease;
+}
+/* Sidebar Styles */
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #4169E1;
+    color: white;
+    padding-top: 20px;
+    transition: width .5s ease;
+}
+.sidebar.closed {
+    width: 75px;
+}
+.sidebar a {
+    padding: 10px 25px;
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+.sidebar a:hover {
+    background-color: #555;
+}
+.current_page {
+    background-color: #555;
+}
+.sidebar_links {
+    margin-top: 30px;
+    text-align: left;
+}
+.link-text {
+    margin-left: 25px; 
+}
+
+/* Dropdown Styles */
+.dropdown-container {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px;
+}
+
+.top-right-dropdown button {
+    background-color: #4169E1;
+    color: #FFECB3; 
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px; 
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #F5F5F5;
+    min-width: 160px;
+    z-index: 1;
+    right: 0;
+    font-family: 'Montserrat', sans-serif;
+    overflow: hidden; 
+}
+
+.dropdown-content .dropdown-link {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 16px;
+}
+
+.dropdown-content .dropdown-link:hover {
+    background-color: #FFECB3;
+}
+
+.show {
+    display: block;
+}
+
+/* Logo Styles */
+.logo_container {
+    display: flex;
+    cursor: pointer;
+    margin-top: -20px;
+    margin-left: 0px;  
+    margin-bottom: -10px; 
+}
+.logo_inner {
+    margin-left: 0px; 
+}
+
+/* Line Styles */
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: #CCCCCC;
+    margin-top: 10px; 
+}
+
+.line-vertical {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px; 
+    height: 100%;
+    background-color: #CCCCCC;
+}
+
+/* Toggle Button Styles */
+.toggle_button {
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden; 
+    font-size: 35px;
+    margin-left: 190px;
+    transition: margin-left 0.3s ease;
+}
+.toggle_button.closed {
+    margin-left: 15px; 
+}
+
+/* Additional Styles */
+.sidebar, .dropdown-content, .sidebar a, .content {
+    font-family: 'Montserrat', sans-serif;
+}
+.line {
+    height: 2px;
+    background-color: #CCCCCC;
+}
+.dropbtnClasses {
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+}
+
+.dropdownClasses {
+    position: relative;
+    display: inline-block; /* Ensure it's inline-block to position properly */
+    padding: 10px 25px;
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+
+.dropdown-contentClasses a:hover {
+    background-color: #555;
+}
+
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-contentClasses {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    margin-top: 0; /* Ensure no extra space above the dropdown */
+}
+
+/* Links inside the dropdown */
+.dropdown-contentClasses a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    margin: 0; /* Reset margin for a */
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-contentClasses a:hover {
+    background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdownClasses:hover .dropdown-contentClasses {
+    display: block;
+}
+
+.content {
+    position: relative;
+    padding-left: 265px; 
+    box-sizing: border-box; 
+    transition: padding-left 0.5s ease; 
+}
+
+.update_button{
+    margin-left: 10px;
+    margin-top: 20px;
+    margin-right: 85px;
+    width: 100px;
+    height: 40px;
+    border-radius: 6px;
+    border-color: #222277;
+    background-color: #222277;
+    color: #FFD700;
+    font-size: 20px;
+
+}
